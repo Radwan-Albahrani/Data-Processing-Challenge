@@ -15,12 +15,18 @@ import {
     insertInspectionQueryString,
     insertActivityQueryString,
     insertStampQueryString,
-    requestsQuery,
-    licenseTableQuery,
-    accountTableQuery,
-    inspectionTableQuery,
-    activityTableQuery,
-    stampTableQuery,
+    createRequestsTableQuery,
+    createLicenseTableQuery,
+    createAccountTableQuery,
+    createInspectionTableQuery,
+    createActivityTableQuery,
+    createStampLicenseLetterTableQuery,
+    countAllRequestsQuery,
+    countAllLicensesQuery,
+    countAllAccountRequestsQuery,
+    countAllInspectionQuery,
+    countAllActivitiesQuery,
+    countAllStampsQuery,
 } from "./queries";
 
 export const insertData = async (
@@ -139,17 +145,19 @@ export const insertData = async (
 export const createTables = async () => {
     // Connect to the database
     const db = new Database("data/data.sqlite");
-    const requestsTable = db.prepare(requestsQuery);
+    const requestsTable = db.prepare(createRequestsTableQuery);
 
-    const newLicenseTable = db.prepare(licenseTableQuery);
+    const newLicenseTable = db.prepare(createLicenseTableQuery);
 
-    const accountRequestTable = db.prepare(accountTableQuery);
+    const accountRequestTable = db.prepare(createAccountTableQuery);
 
-    const inspectionRequestTable = db.prepare(inspectionTableQuery);
+    const inspectionRequestTable = db.prepare(createInspectionTableQuery);
 
-    const addNewActivityTable = db.prepare(activityTableQuery);
+    const addNewActivityTable = db.prepare(createActivityTableQuery);
 
-    const stampLicenseLetterTable = db.prepare(stampTableQuery);
+    const stampLicenseLetterTable = db.prepare(
+        createStampLicenseLetterTableQuery
+    );
 
     const tableTransaction = db.transaction(() => {
         requestsTable.run();
@@ -164,4 +172,42 @@ export const createTables = async () => {
 
     // close the database
     db.close();
+};
+
+export const getAllData = async () => {
+    // Connect to the database
+    const db = new Database("data/data.sqlite");
+    const requestsTable = db.prepare(countAllRequestsQuery);
+    const licensesTable = db.prepare(countAllLicensesQuery);
+    const accountsTable = db.prepare(countAllAccountRequestsQuery);
+    const inspectionTable = db.prepare(countAllInspectionQuery);
+    const activityTable = db.prepare(countAllActivitiesQuery);
+    const stampTable = db.prepare(countAllStampsQuery);
+    const runAll = db.transaction(() => {
+        const requests = requestsTable.all();
+        const licenses = licensesTable.all();
+        const accounts = accountsTable.all();
+        const inspections = inspectionTable.all();
+        const activities = activityTable.all();
+        const stamps = stampTable.all();
+        return {
+            allRequests: requests,
+            licenses: licenses,
+            accounts: accounts,
+            inspections: inspections,
+            activities: activities,
+            stamps: stamps,
+        };
+    });
+
+    let result;
+    try {
+        result = await runAll();
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+
+    db.close();
+    return result;
 };

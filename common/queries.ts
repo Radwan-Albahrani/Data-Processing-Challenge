@@ -1,6 +1,6 @@
 // ========================= Request Table Queries =========================
 
-export const requestsQuery = `
+export const createRequestsTableQuery = `
 CREATE TABLE IF NOT EXISTS Requests (
     RequestID INTEGER PRIMARY KEY,
     RequestType INTEGER Check (RequestType IN (1, 2, 3, 4, 5)),
@@ -14,8 +14,12 @@ INSERT INTO Requests (RequestID, RequestType, RequestStatus, RequestData)
 VALUES ($requestID , $requestType, $requestStatus, $requestData);
 `;
 
+export const countAllRequestsQuery = `
+SELECT COUNT(*) as Amount FROM Requests;
+`;
+
 // ========================= New License Table Queries =========================
-export const licenseTableQuery = `
+export const createLicenseTableQuery = `
 CREATE TABLE IF NOT EXISTS NewLicense (
     RequestID INTEGER,
     CompanyName TEXT,
@@ -34,9 +38,13 @@ INSERT INTO NewLicense (CompanyName, LicenseType, IsOffice, OfficeName, OfficeSe
 VALUES ($companyName, $licenseType, $isOffice, $officeName, $officeServiceNumber, $requestDate, $activities, $requestID);
 `;
 
+export const countAllLicensesQuery = `
+SELECT COUNT(*) as Amount FROM NewLicense;
+`;
+
 // ========================= Account Table Queries =========================
 
-export const accountTableQuery = `
+export const createAccountTableQuery = `
 CREATE TABLE IF NOT EXISTS AccountRequest (
     RequestID INTEGER,
     CompanyName TEXT,
@@ -54,8 +62,14 @@ INSERT INTO AccountRequest (CompanyName, RequesterName, ApplicantName, UserName,
 VALUES ($companyName, $requesterName, $applicantName, $userName, $contactEmail, $permissions, $requestID);
 `;
 
+export const countAllAccountRequestsQuery = `
+SELECT COUNT(*) as Amount FROM AccountRequest;
+`;
+
 // ========================= Inspection Table Queries =========================
-export const inspectionTableQuery = `
+
+// ====== Inspection Table Queries ======
+export const createInspectionTableQuery = `
 CREATE TABLE IF NOT EXISTS InspectionRequest (
     RequestID INTEGER,
     CompanyName TEXT,
@@ -66,13 +80,20 @@ CREATE TABLE IF NOT EXISTS InspectionRequest (
     );
 `;
 
+// ====== Insert Inspection Table Queries ======
+
 export const insertInspectionQueryString = `
 INSERT INTO InspectionRequest (CompanyName, InspectionDate, InspectionTime, InspectionType, RequestID)
 VALUES ($companyName, $inspectionDate, $inspectionTime, $inspectionType, $requestID);
 `;
 
+// ====== Select All Inspection Table Queries ======
+export const countAllInspectionQuery = `
+SELECT COUNT(*) as Amount FROM InspectionRequest;
+`;
+
 // ========================= Activity Table Queries =========================
-export const activityTableQuery = `
+export const createActivityTableQuery = `
 CREATE TABLE IF NOT EXISTS AddNewActivity (
     RequestID INTEGER,
     CompanyName TEXT,
@@ -87,8 +108,12 @@ INSERT INTO AddNewActivity (CompanyName, LicenseID, Activities, RequestID)
 VALUES ($companyName, $licenseID, $activities, $requestID);
 `;
 
+export const countAllActivitiesQuery = `
+SELECT COUNT(*) as Amount FROM AddNewActivity;
+`;
+
 // ========================= Stamp Table Queries =========================
-export const stampTableQuery = `
+export const createStampLicenseLetterTableQuery = `
 CREATE TABLE IF NOT EXISTS StampLicenseLetter (
     RequestID INTEGER,
     CompanyName TEXT,
@@ -101,4 +126,8 @@ CREATE TABLE IF NOT EXISTS StampLicenseLetter (
 export const insertStampQueryString = `
 INSERT INTO StampLicenseLetter (CompanyName, LicenseID, RequestDate, RequestID)
 VALUES ($companyName, $licenseID, $requestDate, $requestID);
+`;
+
+export const countAllStampsQuery = `
+SELECT COUNT(*) as Amount FROM StampLicenseLetter;
 `;
