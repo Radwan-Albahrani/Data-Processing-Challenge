@@ -7,7 +7,6 @@ const handleCSV = async (req: Request) => {
     // Get the request body
     const csv = await req.text();
     let data: { [key: string]: string }[] = [];
-    console.log("Received a CSV file");
 
     // Parse the CSV
     try {
@@ -28,8 +27,12 @@ const handleCSV = async (req: Request) => {
             );
         });
     } catch (error) {
-        console.log(error);
-        return new Response(`Error parsing the CSV: ${error}`, { status: 500 });
+        const ResponseJson = JSON.stringify({
+            status: 500,
+            error: error,
+            message: "Error parsing the CSV",
+        });
+        return new Response(ResponseJson, { status: 500 });
     }
 
     // Make sure the last column is a proper JSON object
@@ -48,37 +51,47 @@ const handleCSV = async (req: Request) => {
             };
         });
     } catch (error) {
-        console.log(error);
-        return new Response(
-            `Error parsing the RequestData Field of the CSV: ${error}`,
-            {
-                status: 500,
-            }
-        );
+        const ResponseJson = JSON.stringify({
+            status: 500,
+            error: error,
+            message: "Error parsing the RequestData field",
+        });
+        return new Response(ResponseJson, {
+            status: 500,
+        });
     }
 
     // Create all tables
     try {
-        console.log("Creating the table");
         await createTables();
     } catch (error) {
-        console.log(error);
-        return new Response(`Error creating the table: ${error}`, {
+        const ResponseJson = JSON.stringify({
+            status: 500,
+            error: error,
+            message: "Error creating the table",
+        });
+        return new Response(ResponseJson, {
             status: 500,
         });
     }
     // Add the data to the database
-    console.log("Adding the data to the database");
+
     try {
-        insertData(newData);
+        await insertData(newData);
     } catch (error) {
-        console.log(error);
-        return new Response(`Error adding the data to the database: ${error}`, {
+        const ResponseJson = JSON.stringify({
             status: 500,
+            error: error,
+            message: "Error inserting data",
         });
+        return new Response(ResponseJson, { status: 500 });
     }
 
-    return new Response("Data Imported Successfully", { status: 200 });
+    const ResponseJson = JSON.stringify({
+        status: 200,
+        message: "Data Imported Successfully",
+    });
+    return new Response(ResponseJson, { status: 200 });
 };
 
 export default handleCSV;

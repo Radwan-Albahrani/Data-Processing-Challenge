@@ -132,6 +132,7 @@ export const insertData = async (
     );
 
     await insertDataTransaction(data);
+
     // close the database
     db.close();
 };

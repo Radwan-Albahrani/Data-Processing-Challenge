@@ -15,10 +15,25 @@ const server = serve({
 
         // Receive a CSV file and add it to the database
         if (method === "POST" && url.pathname === "/upload/csv") {
-            return handleCSV(request);
+            const response = await handleCSV(request);
+            const responseCopy = response.clone();
+            console.log(request.method, request.url, responseCopy.status);
+            console.log(await responseCopy.text());
+            return response;
         }
 
-        return new Response("Not Found", { status: 404 });
+        const responseJson = JSON.stringify({
+            status: 404,
+            message: "Not Found",
+        });
+        return new Response(responseJson, { status: 404 });
+    },
+    error(error) {
+        return new Response(`<pre>${error}\n${error.stack}</pre>`, {
+            headers: {
+                "Content-Type": "text/html",
+            },
+        });
     },
 });
 
