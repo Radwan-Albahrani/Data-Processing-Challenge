@@ -6,6 +6,20 @@ import type {
     NewLicenseModel,
     StampLicenseModel,
 } from "../models/index";
+import {
+    accountTableQuery,
+    activityTableQuery,
+    insertAccountQueryString,
+    insertActivityQueryString,
+    insertInspectionQueryString,
+    insertLicenseQueryString,
+    insertRequestQueryString,
+    insertStampQueryString,
+    inspectionTableQuery,
+    licenseTableQuery,
+    requestsQuery,
+    stampTableQuery,
+} from "../common/queries";
 // Handle the CSV file
 const handleCSV = async (req: Request) => {
     // Get the request body
@@ -68,84 +82,17 @@ const handleCSV = async (req: Request) => {
     // Create all tables
     try {
         console.log("Creating the table");
-        const requestsTable = db.prepare(
-            `
-            CREATE TABLE IF NOT EXISTS Requests (
-                RequestID INTEGER PRIMARY KEY,
-                RequestType INTEGER Check (RequestType IN (1, 2, 3, 4, 5)),
-                RequestStatus INTEGER  Check (RequestStatus IN (1, 2, 3)),
-                RequestData text Check (RequestData IN ("New License", "Account Request", "Inspection Request", "Add New Activity", "Stamp License Letter"))
-                );
-        `
-        );
+        const requestsTable = db.prepare(requestsQuery);
 
-        const newLicenseTable = db.prepare(
-            `
-            CREATE TABLE IF NOT EXISTS NewLicense (
-                RequestID INTEGER,
-                CompanyName TEXT,
-                LicenseType TEXT Check (LicenseType IN ("Proprietor", "Commercial", "Personal")),
-                IsOffice BOOLEAN,
-                OfficeName TEXT,
-                OfficeServiceNumber TEXT,
-                RequestDate TEXT,
-                Activities TEXT,
-                Foreign Key (RequestID) References Requests(RequestID)
-                );
-        `
-        );
+        const newLicenseTable = db.prepare(licenseTableQuery);
 
-        const accountRequestTable = db.prepare(
-            `
-            CREATE TABLE IF NOT EXISTS AccountRequest (
-                RequestID INTEGER,
-                CompanyName TEXT,
-                RequesterName TEXT,
-                ApplicantName TEXT,
-                UserName TEXT,
-                ContactEmail TEXT,
-                Permissions TEXT,
-                Foreign Key (RequestID) References Requests(RequestID)
-                );
-        `
-        );
+        const accountRequestTable = db.prepare(accountTableQuery);
 
-        const inspectionRequestTable = db.prepare(
-            `
-            CREATE TABLE IF NOT EXISTS InspectionRequest (
-                RequestID INTEGER,
-                CompanyName TEXT,
-                InspectionDate TEXT,
-                InspectionTime TEXT,
-                InspectionType TEXT Check (InspectionType IN ("renew", "check", "update", "new")),
-                Foreign Key (RequestID) References Requests(RequestID)
-                );
-        `
-        );
+        const inspectionRequestTable = db.prepare(inspectionTableQuery);
 
-        const addNewActivityTable = db.prepare(
-            `
-            CREATE TABLE IF NOT EXISTS AddNewActivity (
-                RequestID INTEGER,
-                CompanyName TEXT,
-                LicenseID TEXT,
-                Activities TEXT,
-                Foreign Key (RequestID) References Requests(RequestID)
-                );
-        `
-        );
+        const addNewActivityTable = db.prepare(activityTableQuery);
 
-        const stampLicenseLetterTable = db.prepare(
-            `
-            CREATE TABLE IF NOT EXISTS StampLicenseLetter (
-                RequestID INTEGER,
-                CompanyName TEXT,
-                LicenseID TEXT,
-                RequestDate TEXT,
-                Foreign Key (RequestID) References Requests(RequestID)
-                );
-        `
-        );
+        const stampLicenseLetterTable = db.prepare(stampTableQuery);
 
         const runTransaction = db.transaction(() => {
             requestsTable.run();
@@ -166,46 +113,20 @@ const handleCSV = async (req: Request) => {
     // Add the data to the database
     console.log("Adding the data to the database");
     try {
-        const insertRequestQuery = db.prepare(
-            `
-            INSERT INTO Requests (RequestID, RequestType, RequestStatus, RequestData)
-            VALUES ($requestID , $requestType, $requestStatus, $requestData);
-        `
-        );
+        const insertRequestQuery = db.prepare(insertRequestQueryString);
 
-        const insertRequestLicenseQuery = db.prepare(
-            `
-            INSERT INTO NewLicense (CompanyName, LicenseType, IsOffice, OfficeName, OfficeServiceNumber, RequestDate, Activities, RequestID)
-            VALUES ($companyName, $licenseType, $isOffice, $officeName, $officeServiceNumber, $requestDate, $activities, $requestID);
-        `
-        );
+        const insertRequestLicenseQuery = db.prepare(insertLicenseQueryString);
 
-        const insertAccountRequestQuery = db.prepare(
-            `
-            INSERT INTO AccountRequest (CompanyName, RequesterName, ApplicantName, UserName, ContactEmail, Permissions, RequestID)
-            VALUES ($companyName, $requesterName, $applicantName, $userName, $contactEmail, $permissions, $requestID);
-        `
-        );
+        const insertAccountRequestQuery = db.prepare(insertAccountQueryString);
 
         const insertInspectionRequestQuery = db.prepare(
-            `
-            INSERT INTO InspectionRequest (CompanyName, InspectionDate, InspectionTime, InspectionType, RequestID)
-            VALUES ($companyName, $inspectionDate, $inspectionTime, $inspectionType, $requestID);
-        `
+            insertInspectionQueryString
         );
 
-        const insertAddNewActivityQuery = db.prepare(
-            `
-            INSERT INTO AddNewActivity (CompanyName, LicenseID, Activities, RequestID)
-            VALUES ($companyName, $licenseID, $activities, $requestID);
-        `
-        );
+        const insertAddNewActivityQuery = db.prepare(insertActivityQueryString);
 
         const insertStampLicenseLetterQuery = db.prepare(
-            `
-            INSERT INTO StampLicenseLetter (CompanyName, LicenseID, RequestDate, RequestID)
-            VALUES ($companyName, $licenseID, $requestDate, $requestID);
-        `
+            insertStampQueryString
         );
         const insertData = db.transaction(
             (
