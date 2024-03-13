@@ -43,7 +43,7 @@ export const insertData = async (
     const insertAddNewActivityQuery = db.prepare(insertActivityQueryString);
 
     const insertStampLicenseLetterQuery = db.prepare(insertStampQueryString);
-    const insertTransaction = db.transaction(
+    const insertDataTransaction = db.transaction(
         (
             data: {
                 [key: string]: string;
@@ -131,7 +131,7 @@ export const insertData = async (
         }
     );
 
-    await insertTransaction(data);
+    await insertDataTransaction(data);
     // close the database
     db.close();
 };
@@ -150,7 +150,7 @@ export const createTables = async () => {
 
     const stampLicenseLetterTable = db.prepare(stampTableQuery);
 
-    const runTransaction = db.transaction(() => {
+    const tableTransaction = db.transaction(() => {
         requestsTable.run();
         newLicenseTable.run();
         accountRequestTable.run();
@@ -159,7 +159,7 @@ export const createTables = async () => {
         stampLicenseLetterTable.run();
     });
 
-    await runTransaction();
+    await tableTransaction();
 
     // close the database
     db.close();
