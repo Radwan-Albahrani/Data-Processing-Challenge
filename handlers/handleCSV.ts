@@ -1,10 +1,11 @@
 import { Database } from "bun:sqlite";
-import type { NewLicenseModel } from "../models/newLicenseModel";
-import type { AccountRequestModel } from "../models/accountRequestModel";
-import type { InspectionRequestModel } from "../models/inspectionRequestModel";
-import type { NewActivityModel } from "../models/newActivityModel";
-import type { StampLicenseModel } from "../models/stampLicenseModel";
-
+import type {
+    AccountRequestModel,
+    InspectionRequestModel,
+    NewActivityModel,
+    NewLicenseModel,
+    StampLicenseModel,
+} from "../models/index";
 // Handle the CSV file
 const handleCSV = async (req: Request) => {
     // Get the request body
