@@ -38,14 +38,13 @@ const handleCSV = async (req: Request) => {
     // Parse the RequestData field
     try {
         newData = data.map((row) => {
-            const requestData = row.RequestData;
-            const newRequestData = requestData.replace(/"/g, "'");
-            const newRequestData2 = newRequestData.replace(/''/g, '"');
-            const newRequestData3 = newRequestData2.replace(/'/g, "");
+            let requestData = row.RequestData;
+            requestData = requestData.slice(1, -1);
+            requestData = requestData.replace(/""/g, '"');
             delete row.RequestData;
             return {
                 ...row,
-                RequestData: JSON.parse(newRequestData3),
+                RequestData: JSON.parse(requestData),
             };
         });
     } catch (error) {
