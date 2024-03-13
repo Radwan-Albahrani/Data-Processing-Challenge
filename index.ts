@@ -13,7 +13,7 @@ const server = serve({
         const { method } = request;
         const url = new URL(request.url);
 
-        // Receive a CSV file and return it as a JSON
+        // Receive a CSV file and add it to the database
         if (method === "POST" && url.pathname === "/upload/csv") {
             return handleCSV(request);
         }
