@@ -78,11 +78,15 @@ const handleCSV = async (req: Request) => {
 
     try {
         await insertData(newData);
-    } catch (error) {
+    } catch (error: any) {
+        let details = "";
+        if (error.code.includes("SQLITE_CONSTRAINT")) {
+            details = "Duplicate Entry";
+        }
         const ResponseJson = JSON.stringify({
             status: 500,
             error: error,
-            message: "Error inserting data",
+            message: `Error inserting the data: ${details}`,
         });
         return new Response(ResponseJson, { status: 500 });
     }
