@@ -2,6 +2,7 @@
 import { serve } from "bun";
 
 import handleCSV from "./handlers/handleCSV";
+import handleGetAllData from "./handlers/handleGetAllData";
 
 // Define the port
 const PORT = 3000;
@@ -14,8 +15,16 @@ const server = serve({
         const url = new URL(request.url);
 
         // Receive a CSV file and add it to the database
-        if (method === "POST" && url.pathname === "/upload/csv") {
+        if (method === "POST" && url.pathname === "/api/upload/csv") {
             const response = await handleCSV(request);
+            const responseCopy = response.clone();
+            console.log(request.method, request.url, responseCopy.status);
+            console.log(await responseCopy.text());
+            return response;
+        }
+
+        if (method === "GET" && url.pathname === "/api/requests") {
+            const response = await handleGetAllData();
             const responseCopy = response.clone();
             console.log(request.method, request.url, responseCopy.status);
             console.log(await responseCopy.text());
