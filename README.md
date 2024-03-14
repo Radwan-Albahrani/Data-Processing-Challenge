@@ -151,7 +151,7 @@ Where `allCounts` is an object with the following structure:
       ]
 ```
 
-### Error Handling
+### Server Errors
 
 #### 404: Not Found
 
@@ -203,6 +203,10 @@ Where `allCounts` is an object with the following structure:
         "error" : "Error message",
     }
 ```
+
+### Error Handling
+
+Type enforcement is handled using TypeScript. The API will return a 422 error if the request is not properly formatted. The API will also store the data using proper types, which can be found in the [model](./models/) files. Every schema is accounted for using a model.
 
 ## License
 
