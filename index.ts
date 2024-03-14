@@ -34,6 +34,7 @@ const server = serve({
         const responseJson = JSON.stringify({
             status: 404,
             message: "Not Found",
+            details: "The route you are trying to access does not exist",
         });
         return new Response(responseJson, { status: 404 });
     },

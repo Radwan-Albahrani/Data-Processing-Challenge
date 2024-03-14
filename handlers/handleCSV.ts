@@ -16,6 +16,7 @@ const handleCSV = async (req: Request) => {
         if (typeof csvBlob !== "string" && csvBlob.type !== "text/csv") {
             const ResponseJson = JSON.stringify({
                 status: 400,
+                statusText: "Bad Request",
                 message: "Invalid File Type",
             });
             return new Response(ResponseJson, { status: 400 });
@@ -46,11 +47,12 @@ const handleCSV = async (req: Request) => {
         });
     } catch (error) {
         const ResponseJson = JSON.stringify({
-            status: 500,
+            status: 422,
+            statusText: "Unprocessable Entity",
             error: error,
             message: "Error parsing the CSV",
         });
-        return new Response(ResponseJson, { status: 500 });
+        return new Response(ResponseJson, { status: 400 });
     }
 
     // Make sure the last column is a proper JSON object
@@ -69,9 +71,10 @@ const handleCSV = async (req: Request) => {
         });
     } catch (error) {
         const ResponseJson = JSON.stringify({
-            status: 500,
-            error: error,
+            status: 422,
+            statusText: "Unprocessable Entity",
             message: "Error parsing the RequestData field",
+            error: error,
         });
         return new Response(ResponseJson, {
             status: 500,
@@ -84,8 +87,9 @@ const handleCSV = async (req: Request) => {
     } catch (error) {
         const ResponseJson = JSON.stringify({
             status: 500,
-            error: error,
+            statusText: "Internal Server Error",
             message: "Error creating the table",
+            error: error,
         });
         return new Response(ResponseJson, {
             status: 500,
@@ -101,7 +105,8 @@ const handleCSV = async (req: Request) => {
             details = "Duplicate Entry";
         }
         const ResponseJson = JSON.stringify({
-            status: 500,
+            status: 400,
+            statusText: "Bad Request",
             error: error,
             message: `Error inserting the data: ${details}`,
         });
@@ -112,18 +117,17 @@ const handleCSV = async (req: Request) => {
         allCounts = await getAllData();
     } catch (error) {
         const ResponseJson = JSON.stringify({
-            status: 500,
-            error: error,
+            status: 400,
+            statusText: "Bad Request",
             message: "Error getting the data",
+            error: error,
         });
         return new Response(ResponseJson, { status: 500 });
     }
     const ResponseJson = JSON.stringify({
         status: 200,
         message: "Data Imported Successfully",
-        details: {
-            tablesUpdated: allCounts,
-        },
+        details: allCounts,
     });
     return new Response(ResponseJson, { status: 200 });
 };

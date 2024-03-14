@@ -22,7 +22,7 @@ const handleGetAllData = async () => {
         status: 200,
         message: "Data Report",
         details: {
-            tablesUpdated: allCounts,
+            tables: allCounts,
         },
     });
     return new Response(ResponseJson, { status: 200 });
