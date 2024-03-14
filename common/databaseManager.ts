@@ -29,6 +29,7 @@ import {
     countAllStampsQuery,
 } from "./queries";
 
+// ========================== Inserting Data ==========================
 export const insertData = async (
     data: {
         [key: string]: string;
@@ -36,25 +37,26 @@ export const insertData = async (
 ) => {
     // Connect to the database
     const db = new Database("data/data.sqlite");
+
+    // Prepare any insert statements
     const insertRequestQuery = db.prepare(insertRequestQueryString);
-
     const insertRequestLicenseQuery = db.prepare(insertLicenseQueryString);
-
     const insertAccountRequestQuery = db.prepare(insertAccountQueryString);
-
     const insertInspectionRequestQuery = db.prepare(
         insertInspectionQueryString
     );
-
     const insertAddNewActivityQuery = db.prepare(insertActivityQueryString);
-
     const insertStampLicenseLetterQuery = db.prepare(insertStampQueryString);
+
+    // ================= Start a transaction =================
     const insertDataTransaction = db.transaction(
         (
             data: {
                 [key: string]: string;
             }[]
         ) => {
+            // ================= Insert the data =================
+            // for each row, determine the request type
             for (const row of data) {
                 let requestData = "";
                 if (row.RequestType === "1") {
@@ -68,12 +70,16 @@ export const insertData = async (
                 } else if (row.RequestType === "5") {
                     requestData = "Stamp License Letter";
                 }
+
+                // Insert basic request information in the requests table
                 insertRequestQuery.run({
                     $requestID: row.RequestID,
                     $requestType: row.RequestType,
                     $requestStatus: row.RequestStatus,
                     $requestData: requestData,
                 });
+
+                // Insert the request data in the appropriate table
                 if (row.RequestType === "1") {
                     const licenseRequest: NewLicenseModel = JSON.parse(
                         JSON.stringify(row.RequestData)
@@ -137,28 +143,29 @@ export const insertData = async (
         }
     );
 
+    // Run the transaction
     await insertDataTransaction(data);
 
     // close the database
     db.close();
 };
+
+// ========================== Creating Tables ==========================
 export const createTables = async () => {
     // Connect to the database
     const db = new Database("data/data.sqlite");
+
+    // Prepare any table creation statements
     const requestsTable = db.prepare(createRequestsTableQuery);
-
     const newLicenseTable = db.prepare(createLicenseTableQuery);
-
     const accountRequestTable = db.prepare(createAccountTableQuery);
-
     const inspectionRequestTable = db.prepare(createInspectionTableQuery);
-
     const addNewActivityTable = db.prepare(createActivityTableQuery);
-
     const stampLicenseLetterTable = db.prepare(
         createStampLicenseLetterTableQuery
     );
 
+    // Start a transaction
     const tableTransaction = db.transaction(() => {
         requestsTable.run();
         newLicenseTable.run();
@@ -168,21 +175,27 @@ export const createTables = async () => {
         stampLicenseLetterTable.run();
     });
 
+    // Run the transaction
     await tableTransaction();
 
     // close the database
     db.close();
 };
 
+// ========================== Get All Data ==============================
 export const getAllData = async () => {
     // Connect to the database
     const db = new Database("data/data.sqlite");
+
+    // Prepare any count statements
     const requestsTable = db.prepare(countAllRequestsQuery);
     const licensesTable = db.prepare(countAllLicensesQuery);
     const accountsTable = db.prepare(countAllAccountRequestsQuery);
     const inspectionTable = db.prepare(countAllInspectionQuery);
     const activityTable = db.prepare(countAllActivitiesQuery);
     const stampTable = db.prepare(countAllStampsQuery);
+
+    // Start a transaction
     const runAll = db.transaction(() => {
         const requests = requestsTable.all();
         const licenses = licensesTable.all();
@@ -200,14 +213,18 @@ export const getAllData = async () => {
         };
     });
 
+    // Run the transaction. If an error occurs, close the database and throw the error
     let result;
     try {
         result = await runAll();
     } catch (error) {
-        console.log(error);
+        db.close();
         throw error;
     }
 
+    // close the database
     db.close();
+
+    // return the result
     return result;
 };
