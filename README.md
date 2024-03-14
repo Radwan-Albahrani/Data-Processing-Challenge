@@ -12,8 +12,8 @@
 - [Error Handling](#error-handling)
   - [404: Not Found](#404-not-found)
   - [400: Internal Server Error](#400-internal-server-error)
-  - [500: Internal Server Error](#500-internal-server-error)
   - [422: Unprocessable Entity](#422-unprocessable-entity)
+  - [500: Internal Server Error](#500-internal-server-error)
 - [License](#license)
 
 ## Description
@@ -59,7 +59,7 @@ returns a report of all requests currently in the database.
             "tables": "allCounts",
         },
     }
-    ```
+```
 
 Where `allCounts` is an object with the following structure:
 
@@ -114,7 +114,7 @@ uploads a CSV file to the database.
             "tables": allCounts,
         },
     }
-    ```
+```
 
 Where `allCounts` is an object with the following structure:
 
@@ -163,7 +163,7 @@ Where `allCounts` is an object with the following structure:
       "message": "Route not found",
       "details": "The route you are trying to access does not exist",
   }
-  ```
+```
 
 #### 400: Internal Server Error
 
@@ -173,19 +173,6 @@ Where `allCounts` is an object with the following structure:
     {
         "status": 400,
         "statusText": "Bad Request",
-        "message": "Human readable error message",
-        "error" : "Error message",
-    }
-```
-
-#### 500: Internal Server Error
-
-- Response:
-
-```JSON
-    {
-        "status": 500,
-        "statusText": "Internal Server Error",
         "message": "Human readable error message",
         "error" : "Error message",
     }
@@ -202,6 +189,19 @@ Where `allCounts` is an object with the following structure:
       "message": "Human readable error message",
       "error" : "Error message",
   }
+```
+
+#### 500: Internal Server Error
+
+- Response:
+
+```JSON
+    {
+        "status": 500,
+        "statusText": "Internal Server Error",
+        "message": "Human readable error message",
+        "error" : "Error message",
+    }
 ```
 
 ## License
