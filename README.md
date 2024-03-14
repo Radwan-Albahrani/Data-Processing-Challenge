@@ -7,7 +7,8 @@
 - [Usage](#usage)
 - [Documentation](#documentation)
 - [API Routes](#api-routes)
-  - [GET /api/requests](#get-apirequests)
+  - [GET /api/report](#get-apireport)
+  - [GET /api/select/:table](#get-apiselecttable)
   - [POST /api/upload/csv](#post-apiuploadcsv)
 - [Error Handling](#error-handling)
   - [404: Not Found](#404-not-found)
@@ -42,7 +43,7 @@ This project was created using `bun init` in bun v1.0.30. [Bun](https://bun.sh) 
 
 ### API Routes
 
-#### GET /api/requests
+#### GET /api/report
 
 returns a report of all requests currently in the database.
 
@@ -95,6 +96,29 @@ Where `allCounts` is an object with the following structure:
         }
       ]
 ```
+
+#### GET /api/select/:table
+
+returns a report of all values in a specific table currently in the database.
+
+- Request:
+  - URL Parameters:
+    - `table`: the name of the table to get the report from
+
+- Response:
+
+```JSON
+{
+  "status": 200,
+  "message": "Data Report",
+  "count": 204,
+  "details": {
+    "data": [data]
+  }
+}
+```
+
+where `data` is an array of objects based on the table.
 
 #### POST /api/upload/csv
 

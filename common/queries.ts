@@ -9,13 +9,20 @@ CREATE TABLE IF NOT EXISTS Requests (
     );
 `;
 
+// ============= Insert Request Query =============
 export const insertRequestQueryString = `
 INSERT INTO Requests (RequestID, RequestType, RequestStatus, RequestData)
 VALUES ($requestID , $requestType, $requestStatus, $requestData);
 `;
 
+// ============= Count All Requests Query =============
 export const countAllRequestsQuery = `
 SELECT COUNT(*) as Amount FROM Requests;
+`;
+
+// ============= Select All Requests Query =============
+export const selectAllRequestsQuery = `
+SELECT * FROM Requests;
 `;
 
 // ========================= New License Table Queries =========================
@@ -33,13 +40,20 @@ CREATE TABLE IF NOT EXISTS NewLicense (
     );
 `;
 
+// ============= Insert License Query =============
 export const insertLicenseQueryString = `
 INSERT INTO NewLicense (CompanyName, LicenseType, IsOffice, OfficeName, OfficeServiceNumber, RequestDate, Activities, RequestID)
 VALUES ($companyName, $licenseType, $isOffice, $officeName, $officeServiceNumber, $requestDate, $activities, $requestID);
 `;
 
+// ============= Count All Licenses Query =============
 export const countAllLicensesQuery = `
 SELECT COUNT(*) as Amount FROM NewLicense;
+`;
+
+// ============= Select All Licenses Query =============
+export const selectAllLicensesQuery = `
+SELECT * FROM NewLicense;
 `;
 
 // ========================= Account Table Queries =========================
@@ -57,13 +71,20 @@ CREATE TABLE IF NOT EXISTS AccountRequest (
     );
 `;
 
+// ============= Insert Account Query =============
 export const insertAccountQueryString = `
 INSERT INTO AccountRequest (CompanyName, RequesterName, ApplicantName, UserName, ContactEmail, Permissions, RequestID)
 VALUES ($companyName, $requesterName, $applicantName, $userName, $contactEmail, $permissions, $requestID);
 `;
 
+// ============= Count All Account Requests Query =============
 export const countAllAccountRequestsQuery = `
 SELECT COUNT(*) as Amount FROM AccountRequest;
+`;
+
+// ============= Select All Account Requests Query =============
+export const selectAllAccountRequestsQuery = `
+SELECT * FROM AccountRequest;
 `;
 
 // ========================= Inspection Table Queries =========================
@@ -87,9 +108,14 @@ INSERT INTO InspectionRequest (CompanyName, InspectionDate, InspectionTime, Insp
 VALUES ($companyName, $inspectionDate, $inspectionTime, $inspectionType, $requestID);
 `;
 
-// ====== Select All Inspection Table Queries ======
+// ====== Count All Inspection Table Queries ======
 export const countAllInspectionQuery = `
 SELECT COUNT(*) as Amount FROM InspectionRequest;
+`;
+
+// ====== Select All Inspection Table Queries ======
+export const selectAllInspectionQuery = `
+SELECT * FROM InspectionRequest;
 `;
 
 // ========================= Activity Table Queries =========================
@@ -103,13 +129,20 @@ CREATE TABLE IF NOT EXISTS AddNewActivity (
     );
 `;
 
+// ====== Insert Activity Table Queries ======
 export const insertActivityQueryString = `
 INSERT INTO AddNewActivity (CompanyName, LicenseID, Activities, RequestID)
 VALUES ($companyName, $licenseID, $activities, $requestID);
 `;
 
+// ====== Count All Activity Table Queries ======
 export const countAllActivitiesQuery = `
 SELECT COUNT(*) as Amount FROM AddNewActivity;
+`;
+
+// ====== Select All Activity Table Queries ======
+export const selectAllActivitiesQuery = `
+SELECT * FROM AddNewActivity;
 `;
 
 // ========================= Stamp Table Queries =========================
@@ -123,11 +156,18 @@ CREATE TABLE IF NOT EXISTS StampLicenseLetter (
     );
 `;
 
+// ============= Insert Stamp Query =============
 export const insertStampQueryString = `
 INSERT INTO StampLicenseLetter (CompanyName, LicenseID, RequestDate, RequestID)
 VALUES ($companyName, $licenseID, $requestDate, $requestID);
 `;
 
+// ============= Count All Stamps Query =============
 export const countAllStampsQuery = `
 SELECT COUNT(*) as Amount FROM StampLicenseLetter;
+`;
+
+// ============= Select All Stamps Query =============
+export const selectAllStampsQuery = `
+SELECT * FROM StampLicenseLetter;
 `;

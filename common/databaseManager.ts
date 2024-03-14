@@ -27,6 +27,12 @@ import {
     countAllInspectionQuery,
     countAllActivitiesQuery,
     countAllStampsQuery,
+    selectAllRequestsQuery,
+    selectAllLicensesQuery,
+    selectAllAccountRequestsQuery,
+    selectAllInspectionQuery,
+    selectAllActivitiesQuery,
+    selectAllStampsQuery,
 } from "./queries";
 
 // ========================== Inserting Data ==========================
@@ -211,6 +217,186 @@ export const getAllData = async () => {
             activities: activities,
             stamps: stamps,
         };
+    });
+
+    // Run the transaction. If an error occurs, close the database and throw the error
+    let result;
+    try {
+        result = await runAll();
+    } catch (error) {
+        db.close();
+        throw error;
+    }
+
+    // close the database
+    db.close();
+
+    // return the result
+    return result;
+};
+
+// ========================== Get All Requests ==============================
+export const getAllRequests = async () => {
+    // Connect to the database
+    const db = new Database("data/data.sqlite");
+
+    // Prepare any count statements
+    const requestsTable = db.prepare(selectAllRequestsQuery);
+
+    // Start a transaction
+    const runAll = db.transaction(() => {
+        const requests = requestsTable.all();
+        return requests;
+    });
+
+    // Run the transaction. If an error occurs, close the database and throw the error
+    let result;
+    try {
+        result = await runAll();
+    } catch (error) {
+        db.close();
+        throw error;
+    }
+
+    // close the database
+    db.close();
+
+    // return the result
+    return result;
+};
+
+// ========================== Get All Licenses ==============================
+export const getAllLicenses = async () => {
+    // Connect to the database
+    const db = new Database("data/data.sqlite");
+
+    // Prepare any count statements
+    const licensesTable = db.prepare(selectAllLicensesQuery);
+
+    // Start a transaction
+    const runAll = db.transaction(() => {
+        const licenses = licensesTable.all();
+        return licenses;
+    });
+
+    // Run the transaction. If an error occurs, close the database and throw the error
+    let result;
+    try {
+        result = await runAll();
+    } catch (error) {
+        db.close();
+        throw error;
+    }
+
+    // close the database
+    db.close();
+
+    // return the result
+    return result;
+};
+
+// ========================== Get All Account Requests ==============================
+export const getAllAccountRequests = async () => {
+    // Connect to the database
+    const db = new Database("data/data.sqlite");
+
+    // Prepare any count statements
+    const accountRequestsTable = db.prepare(selectAllAccountRequestsQuery);
+
+    // Start a transaction
+    const runAll = db.transaction(() => {
+        const accountRequests = accountRequestsTable.all();
+        return accountRequests;
+    });
+
+    // Run the transaction. If an error occurs, close the database and throw the error
+    let result;
+    try {
+        result = await runAll();
+    } catch (error) {
+        db.close();
+        throw error;
+    }
+
+    // close the database
+    db.close();
+
+    // return the result
+    return result;
+};
+
+// ========================== Get All Inspection Requests ==============================
+export const getAllInspectionRequests = async () => {
+    // Connect to the database
+    const db = new Database("data/data.sqlite");
+
+    // Prepare any count statements
+    const inspectionRequestsTable = db.prepare(selectAllInspectionQuery);
+
+    // Start a transaction
+    const runAll = db.transaction(() => {
+        const inspectionRequests = inspectionRequestsTable.all();
+        return inspectionRequests;
+    });
+
+    // Run the transaction. If an error occurs, close the database and throw the error
+    let result;
+    try {
+        result = await runAll();
+    } catch (error) {
+        db.close();
+        throw error;
+    }
+
+    // close the database
+    db.close();
+
+    // return the result
+    return result;
+};
+
+// ========================== Get All Activities ==============================
+export const getAllActivities = async () => {
+    // Connect to the database
+    const db = new Database("data/data.sqlite");
+
+    // Prepare any count statements
+    const activitiesTable = db.prepare(selectAllActivitiesQuery);
+
+    // Start a transaction
+    const runAll = db.transaction(() => {
+        const activities = activitiesTable.all();
+        return activities;
+    });
+
+    // Run the transaction. If an error occurs, close the database and throw the error
+    let result;
+    try {
+        result = await runAll();
+    } catch (error) {
+        db.close();
+        throw error;
+    }
+
+    // close the database
+    db.close();
+
+    // return the result
+    return result;
+};
+
+// ========================== Get All Stamps ==============================
+export const getAllStamps = async () => {
+    // Connect to the database
+    const db = new Database("data/data.sqlite");
+
+    // Prepare any count statements
+    const stampsTable = db.prepare(selectAllStampsQuery);
+
+    // Start a transaction
+    const runAll = db.transaction(() => {
+        const stamps = stampsTable.all();
+        return stamps;
     });
 
     // Run the transaction. If an error occurs, close the database and throw the error
