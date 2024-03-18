@@ -77,6 +77,11 @@ export const insertData = async (
                     requestData = "Stamp License Letter";
                 }
 
+                if (isEmpty(row.RequestData)) {
+                    db.close();
+                    throw new Error("Request Data is empty");
+                }
+
                 // Insert basic request information in the requests table
                 insertRequestQuery.run({
                     $requestID: row.RequestID,
@@ -155,6 +160,15 @@ export const insertData = async (
     // close the database
     db.close();
 };
+
+// ========================== Check if any attribute is empty ==========================
+function isEmpty(obj: any) {
+    for (let key in obj) {
+        if (obj[key] === "" || obj[key] === undefined || obj[key] === null)
+            return true;
+    }
+    return false;
+}
 
 // ========================== Creating Tables ==========================
 export const createTables = async () => {

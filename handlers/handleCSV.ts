@@ -9,21 +9,39 @@ import {
 // Handle the CSV file
 const handleCSV = async (req: Request) => {
     // Get the request csv file
-    const formData = await req.formData();
-    const csvBlob = await formData.get("csv");
+
     let csv = "";
-    if (csvBlob) {
-        if (typeof csvBlob !== "string" && csvBlob.type !== "text/csv") {
+    try {
+        const formData = await req.formData();
+        const csvBlob = await formData.get("csv");
+        if (csvBlob) {
+            if (typeof csvBlob !== "string" && csvBlob.type !== "text/csv") {
+                const ResponseJson = JSON.stringify({
+                    status: 400,
+                    statusText: "Bad Request",
+                    message: "Invalid File Type",
+                });
+                return new Response(ResponseJson, { status: 400 });
+            }
+            if (typeof csvBlob !== "string" && csvBlob.type === "text/csv") {
+                csv = await csvBlob.text();
+            }
+        } else {
             const ResponseJson = JSON.stringify({
                 status: 400,
                 statusText: "Bad Request",
-                message: "Invalid File Type",
+                message: "No File Found",
             });
             return new Response(ResponseJson, { status: 400 });
         }
-        if (typeof csvBlob !== "string" && csvBlob.type === "text/csv") {
-            csv = await csvBlob.text();
-        }
+    } catch (error) {
+        const ResponseJson = JSON.stringify({
+            status: 400,
+            statusText: "Bad Request",
+            message: "Error getting the file",
+            error: "Form Data Empty",
+        });
+        return new Response(ResponseJson, { status: 400 });
     }
     let data: { [key: string]: string }[] = [];
     // Parse the CSV
